@@ -1,18 +1,18 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const PageonShema = new mongoose.Schema({
     number: {
         type: Number, 
         required: true,
     },
-    image: {
+    urlPhoto: {
         type: String,
-        default: "none"
+        default: "https://upload.wikimedia.org/wikipedia/commons/4/4b/Commando_pigeon_hu_61413.jpg"
     },
     year: {
         type: Number,
-        required: true
-    }, 
+        default: '2023'
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -25,4 +25,6 @@ const PageonShema = new mongoose.Schema({
     }
 );
 
-export default mongoose.model("Pageon", PageonShema);
+const model = mongoose.model("Pageon", PageonShema);
+
+module.exports = model;

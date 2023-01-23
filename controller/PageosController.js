@@ -1,50 +1,68 @@
-import Pageons from "../model/Pageon.js";
+const Pageons = require("../model/Pageon.js");
+const multer = require("multer");
+const fileUpload = require("express-fileupload");
 
-export const add = async (req, res) => {
+const add = async (req, res) => {
+    console.log(req.file.originalname)
     try {
         const data = {
             number: req.body.number,
-            image: req.body.image,
             year: req.body.year,
-            user: req.userId
+            urlPhoto: req.file.originalname,
+            user: req.body.id
         }
-    
-        const pageon = await new Pageons(data);
-        await pageon.save();
-    
-        res.json(req.userId)
+        
+        const pigeon = await new Pageons(data);
+        await pigeon.save();
+        data._id = pigeon._id;
+        res.json({
+            data
+        })
     } catch (error) {
         console.log(error)
         res.status(500).json({
-            messae: "Не вдалось додати",
+            messae: "Error add",
          });
     }
 }
 
-export const getAll = async (req, res) => {
+const getAll = async (req, res) => {
     try {
-        const PageonsAll = await Pageons.find().populate('user').exec();
-        console.log(PageonsAll.user)
+        const PageonsAll = await Pageons.find({"user": req.params.userId.slice(1)}).populate('user').exec();
+        // console.log(PageonsAll)
         res.json({
             data: PageonsAll
         })
     } catch (error) {
-        console.log(error)
         res.status(500).json({
             messae: "Не вдалось знайти",
          });
     }
 }
 
-export const deletePageos = async (req, res, next) => {
+const deletePageos = async (req, res, next) => {
     const id = req.params.id;
-    Pageons.findByIdAndRemove(id)
-            .then(() => {
-                res.locals.redirect = "/posts";
-                next();
-            })
-            .catch(error => {
-                console.log(`Error deleting user by ID: ${error.message}`);
-                next();
-            });
+    try {
+        Pageons.findByIdAndRemove(id)
+        .then(() => {
+            console.log('1')
+            next();
+            res.json(true)
+        })
+        .catch(error => {
+            console.log(`Error deleting user by ID: ${error.message}`);
+            next();
+        });
+    } catch (error) {
+        res.status(500).json({
+            messae: error,
+         });
+    }
+
+}
+
+module.exports = {
+    add,
+    getAll,
+    deletePageos
 }

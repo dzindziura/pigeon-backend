@@ -1,8 +1,8 @@
-import jwt from "jsonwebtoken"
+const jwt = require("jsonwebtoken");
 
-export default (req, res, next) => {
-    const token = (req.headers.authorization || '').replace(/Bearer\s?/, '');
-
+module.exports = (req, res, next) => {
+    const token = req.body.token;
+    console.log(req.body)
     if(token){
         try {
             const decoded = jwt.verify(token, 'secretToken');
@@ -16,7 +16,7 @@ export default (req, res, next) => {
         }
     }else{
         res.status(403).json({
-            message: 'Нема доступа'
+            message: 'Error auth'
         })
     }
 }

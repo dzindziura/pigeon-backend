@@ -1,2 +1,9 @@
-export * as UserController from './UserController.js'
-export * as PageosController from './PageosController.js'
+const UserController = require ('./UserController.js');
+const PageosController = require ('./PageosController.js');
+const ChatController = require ('./ChatConstroller.js');
+
+module.exports = {
+    UserController,
+    PageosController,
+    ChatController
+}
